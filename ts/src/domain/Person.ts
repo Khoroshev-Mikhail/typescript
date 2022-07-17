@@ -1,10 +1,8 @@
+import { Identifiable } from "./Identifiable";
+
 type Sex =
   | "male"
   | "female";
-
-export interface Identifiable {
-  id: string;
-}
  
 export interface Person extends Identifiable {
   name: string,

@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.person-page {
+  background: yellowgreen;
+  padding: 32px;
+}
+
+.point-page {
+  background: orange;
+  padding: 32px;
+}
