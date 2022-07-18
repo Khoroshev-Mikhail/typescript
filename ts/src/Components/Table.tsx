@@ -14,16 +14,23 @@ interface TableProps<T> {
     columns: Column<T>[],
     sortBy: string,
 }
-
 export function Table<K extends Identifiable>(props: TableProps<K>){
     const [sorting, setSotring] = useState('id')
+    let ara = props.data[0]
+    console.log('props', ara)
     return (
         <table>
             <thead>
-                <tr>{sorting}</tr>
                 <tr>
                 {props.columns.map(el => (
-                    <th key={el.title} onClick={()=>setSotring(el.title)}>{el.title}</th>
+                    <th 
+                        key={el.title} 
+                        onClick={()=>setSotring(el.title)} 
+                        style={{cursor: 'pointer', borderBottom: '1px dashed black',
+                        background: sorting === el.title ? 'red' : 'none'}}
+                    >
+                        {el.title}
+                    </th>
                 ))}
                 </tr>
             </thead>
@@ -32,6 +39,9 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                     switch(sorting){
                         case 'id': return a.id - b.id
                         case 'color': return b.id - a.id
+                        case 'name': return b.id - a.id
+                        case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
+                        case 'age': return a.age - b.age // не работает если кликать после сортировки по name
                         default: return a.id - b.id
                     }
                }).map(el => (
