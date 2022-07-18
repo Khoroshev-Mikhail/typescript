@@ -31,7 +31,7 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                {props.data.sort((a: any, b: any):any =>{
                     switch(sorting){
                         case 'id': return a.id - b.id
-                        case 'color': return a.color - b.color
+                        case 'color': return b.id - a.id
                         default: return a.id - b.id
                     }
                }).map(el => (
