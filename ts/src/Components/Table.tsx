@@ -1,9 +1,7 @@
-// name | surname | sex | age
-// A    | Aaaa    |  Ж  | 123
-// B    | Zzzz    |  М  | —
-// C    | Xxxx    |  Ж  | 34
-
+import { useState } from "react";
 import {Identifiable} from "../domain/Identifiable";
+import { Person } from "../domain/Person";
+import { Point } from "../domain/Point";
 
 export interface Column<X> {
     title: string,
@@ -14,21 +12,29 @@ export interface Column<X> {
 interface TableProps<T> {
     data: T[]
     columns: Column<T>[],
+    sortBy: string,
 }
 
 export function Table<K extends Identifiable>(props: TableProps<K>){
-    console.log(props.columns)
+    const [sorting, setSotring] = useState('id')
     return (
         <table>
             <thead>
+                <tr>{sorting}</tr>
                 <tr>
                 {props.columns.map(el => (
-                    <th key={el.title}>{el.title}</th>
+                    <th key={el.title} onClick={()=>setSotring(el.title)}>{el.title}</th>
                 ))}
                 </tr>
             </thead>
             <tbody>
-               {props.data.map(el => (
+               {props.data.sort((a: any, b: any):any =>{
+                    switch(sorting){
+                        case 'id': return a.id - b.id
+                        case 'color': return a.color - b.color
+                        default: return a.id - b.id
+                    }
+               }).map(el => (
                     <tr key={el.id}>
                         {props.columns.map(column => (
                             <td key={column.title}>{column.render(el)}</td>

@@ -8,5 +8,5 @@ export interface Person extends Identifiable {
   name: string,
   surname: string | null,
   age?: number,
-  sex: "male" | "female",
+  sex: Sex,
 }
