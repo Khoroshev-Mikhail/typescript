@@ -28,15 +28,15 @@ export function PersonPage() {
             return a.age - b.age;
         }
         case 'id': return Number(a.id) - Number(b.id)
-        case 'name': return  Number(b.id) - Number(a.id)
-        case 'surname': return  Number(a.id) - Number(b.id)
-        case 'sex': return  Number(b.id) - Number(a.id)
+        case 'name': return  Number(a.name.charCodeAt(0)) - Number(b.name.charCodeAt(0))
+        case 'surname': return  Number(a.surname?.charCodeAt(0)) - Number(b.surname?.charCodeAt(0)) //Добавить if
+        case 'sex': return  Number(a.sex.charCodeAt(0)) - Number(b.sex.charCodeAt(0))
         default: return Number(a.id) -  Number(b.id)
     }
 }
   return (
     <div className="person-page">
-      <Table data={people.sort(mySort)} columns={columns} propsSort={setSorter} />
+      <Table data={people.sort(mySort)} columns={columns} propsSort={setSorter} sorter={sorter}/>
     </div>
   );
 }

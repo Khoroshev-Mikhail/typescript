@@ -13,22 +13,20 @@ export const columns: Column<Point>[] = [
   {title: 'coordinates', render: p => `(${p.coordinates?.x}, ${p.coordinates?.y})`},
   {title: 'color', render: p => p.color},
 ]
-export function mySort(a: Point, b: Point):number{
-  return Number(a.id) - Number(b.id)
-}
 
 export function PointPage() {
   const [sorter, setSorter] = useState('id')
   function mySort(a: Point, b: Point):number{
     switch(sorter){
         case 'id': return Number(a.id) - Number(b.id)
+        case 'color': return a.color.charCodeAt(0) - b.color.charCodeAt(0)
         case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
         default: return Number(a.id) -  Number(b.id)
     }
 }
   return (
     <div className="point-page">
-      <Table data={points.sort(mySort)} columns={columns} propsSort={setSorter}/>
+      <Table data={points.sort(mySort)} columns={columns} propsSort={setSorter} sorter={sorter}/>
     </div>
   );
 }

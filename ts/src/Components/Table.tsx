@@ -10,14 +10,12 @@ export interface Column<X> {
 interface TableProps<K> {
     data: K[]
     columns: Column<K>[],
-    propsSort?: (str: string) => void
+    propsSort?: (str: string) => void,
+    sorter: string,
 }
 
 export function Table<K extends Identifiable>(props: TableProps<K>){
-    const [sorting, setSotring] = useState('id')
-    //let ara: K[] = props.data.sort((a: K, b: K) => a.id - b.id)  при арифметической операции ждёт только number, а id: number | string
-
-    /*
+    /*const [sorting, setSotring] = useState('id')s
     function mySort(a: any, b: any):number{
         switch(sorting){
             case 'age': {
@@ -49,7 +47,7 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                     <th 
                         key={el.title} 
                         onClick={()=>/*setSotring(el.title)*/ props.propsSort ? props.propsSort(el.title) : {}} 
-                        style={{cursor: 'pointer', borderBottom: '1px dashed black', background: sorting === el.title ? 'red' : 'none'}}
+                        style={{cursor: 'pointer', borderBottom: '1px dashed black', background: props.sorter === el.title ? 'red' : 'none'}}
                     >
                         {el.title}
                     </th>
