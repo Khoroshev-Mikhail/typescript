@@ -1,7 +1,5 @@
 import { useState } from "react";
 import {Identifiable} from "../domain/Identifiable";
-import { Person } from "../domain/Person";
-import { Point } from "../domain/Point";
 
 export interface Column<X> {
     title: string,
@@ -9,15 +7,40 @@ export interface Column<X> {
     comparator?: (a: X, b: X) => number,
 }
 
-interface TableProps<T> {
-    data: T[]
-    columns: Column<T>[],
-    sortBy: string,
+interface TableProps<K> {
+    data: K[]
+    columns: Column<K>[],
+    propsSort?: (str: string) => void
 }
+
 export function Table<K extends Identifiable>(props: TableProps<K>){
     const [sorting, setSotring] = useState('id')
-    let ara = props.data[0]
-    console.log('props', ara)
+    //let ara: K[] = props.data.sort((a: K, b: K) => a.id - b.id)  при арифметической операции ждёт только number, а id: number | string
+
+    /*
+    function mySort(a: any, b: any):number{
+        switch(sorting){
+            case 'age': {
+                if(!a.age){ //age - не обязательный параметр
+                    return 1
+                }
+                if(!b.age){
+                    return -1
+                }
+                return Number(a.age) - Number(b.age);
+            }
+            case 'id': return Number(a.id) - Number(b.id)
+            case 'color': return  Number(b.id) - Number(a.id)
+            case 'name': return  Number(b.id) - Number(a.id)
+            case 'surname': return  Number(a.id) - Number(b.id)
+            case 'sex': return  Number(b.id) - Number(a.id)
+            //Свойство coordintates отсутствует в типе K(person)
+            case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
+            //Свойство age отстутствуют в типе K(point)
+            default: return Number(a.id) -  Number(b.id)
+        }
+    }
+    */
     return (
         <table>
             <thead>
@@ -25,9 +48,8 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                 {props.columns.map(el => (
                     <th 
                         key={el.title} 
-                        onClick={()=>setSotring(el.title)} 
-                        style={{cursor: 'pointer', borderBottom: '1px dashed black',
-                        background: sorting === el.title ? 'red' : 'none'}}
+                        onClick={()=>/*setSotring(el.title)*/ props.propsSort ? props.propsSort(el.title) : {}} 
+                        style={{cursor: 'pointer', borderBottom: '1px dashed black', background: sorting === el.title ? 'red' : 'none'}}
                     >
                         {el.title}
                     </th>
@@ -35,16 +57,7 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                 </tr>
             </thead>
             <tbody>
-               {props.data.sort((a: any, b: any):any =>{
-                    switch(sorting){
-                        case 'id': return a.id - b.id
-                        case 'color': return b.id - a.id
-                        case 'name': return b.id - a.id
-                        case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
-                        case 'age': return a.age - b.age // не работает если кликать после сортировки по name
-                        default: return a.id - b.id
-                    }
-               }).map(el => (
+               {props.data.map(el => (
                     <tr key={el.id}>
                         {props.columns.map(column => (
                             <td key={column.title}>{column.render(el)}</td>
@@ -55,6 +68,8 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
         </table>
     )
 }
+
+
 
 // [8,6,7,89,9].sort((a, b) => a - b);
 

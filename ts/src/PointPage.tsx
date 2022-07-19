@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { Column, Table } from "./Components/Table";
 import { Point } from "./domain/Point";
-import { Person } from "./domain/Person";
 
 const points: Point[] = [
   {id: "1", coordinates: { x: 1, y: 2 }, color: "green"},
@@ -12,20 +10,17 @@ const points: Point[] = [
   {id: "5", coordinates: { x: 13, y: 3 }, color: "black"},
 ];
 export const columns: Column<Point>[] = [
-  {title: 'coordinates', render: p => `(${p.coordinates.x}, ${p.coordinates.y})`},
+  {title: 'coordinates', render: p => `(${p.coordinates?.x}, ${p.coordinates?.y})`},
   {title: 'color', render: p => p.color},
 ]
 export function mySort(a: Point, b: Point):number{
   return Number(a.id) - Number(b.id)
 }
 
-let man: Person | Point = points[0]
-console.log(man)
 export function PointPage() {
-  const [sortBy, setSortBy] = useState('color')
   return (
     <div className="point-page">
-      <Table data={points} columns={columns} sortBy={sortBy}/>
+      <Table data={points} columns={columns}/>
     </div>
   );
 }

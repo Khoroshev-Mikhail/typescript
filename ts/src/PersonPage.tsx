@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Column, Table } from "./Components/Table";
 import { Person } from "./domain/Person";
-import { Point } from "./domain/Point";
 
 const people: Person[] = [
   {id: "1", name:"A", sex: "female", surname: "Aaaa", age: 123},
@@ -14,13 +13,30 @@ export const columns: Column<Person>[] = [
   {title: 'sex', render: p => p.sex === 'male' ? 'M' : 'Ж'},
   {title: 'age', render: p => p.age === undefined ? '-' : p.age.toString()}
 ]
-let man: Person | Point = people[0]
-console.log(man)
+
 export function PersonPage() {
-  const [sortBy, setSortBy] = useState('id')
+  const [sorter, setSorter] = useState('id')
+  function mySort(a: any, b: any):number{
+    switch(sorter){
+        case 'age': {
+            if(!a.age){ //age - не обязательный параметр
+                return 1
+            }
+            if(!b.age){
+                return -1
+            }
+            return Number(a.age) - Number(b.age);
+        }
+        case 'id': return Number(a.id) - Number(b.id)
+        case 'name': return  Number(b.id) - Number(a.id)
+        case 'surname': return  Number(a.id) - Number(b.id)
+        case 'sex': return  Number(b.id) - Number(a.id)
+        default: return Number(a.id) -  Number(b.id)
+    }
+}
   return (
     <div className="person-page">
-      <Table data={people} columns={columns} sortBy={sortBy}/>
+      <Table data={people.sort(mySort)} columns={columns} propsSort={setSorter} />
     </div>
   );
 }

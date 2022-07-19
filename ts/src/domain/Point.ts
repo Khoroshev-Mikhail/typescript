@@ -1,6 +1,5 @@
 import { Identifiable } from "./Identifiable";
 
-
 export interface Point extends Identifiable {
   coordinates: {
     x: number,
