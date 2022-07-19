@@ -16,7 +16,7 @@ export const columns: Column<Person>[] = [
 
 export function PersonPage() {
   const [sorter, setSorter] = useState('id')
-  function mySort(a: any, b: any):number{
+  function mySort(a: Person, b: Person):number{
     switch(sorter){
         case 'age': {
             if(!a.age){ //age - не обязательный параметр
@@ -25,7 +25,7 @@ export function PersonPage() {
             if(!b.age){
                 return -1
             }
-            return Number(a.age) - Number(b.age);
+            return a.age - b.age;
         }
         case 'id': return Number(a.id) - Number(b.id)
         case 'name': return  Number(b.id) - Number(a.id)

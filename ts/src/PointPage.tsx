@@ -1,6 +1,6 @@
 import { Column, Table } from "./Components/Table";
 import { Point } from "./domain/Point";
-
+import { useState } from "react";
 const points: Point[] = [
   {id: "1", coordinates: { x: 1, y: 2 }, color: "green"},
   {id: "2", coordinates: { x: 0, y: 0 }, color: "pink"},
@@ -18,9 +18,17 @@ export function mySort(a: Point, b: Point):number{
 }
 
 export function PointPage() {
+  const [sorter, setSorter] = useState('id')
+  function mySort(a: Point, b: Point):number{
+    switch(sorter){
+        case 'id': return Number(a.id) - Number(b.id)
+        case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
+        default: return Number(a.id) -  Number(b.id)
+    }
+}
   return (
     <div className="point-page">
-      <Table data={points} columns={columns}/>
+      <Table data={points.sort(mySort)} columns={columns} propsSort={setSorter}/>
     </div>
   );
 }
