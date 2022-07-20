@@ -8,35 +8,53 @@ const people: Person[] = [
   {id: "3", name:"C", sex: "female", surname: "Xxxx", age: 34},
 ];
 export const columns: Column<Person>[] = [
-  {title: 'name', render: p => p.name},
-  {title: 'surname', render: p => p.surname ?? "—"},
-  {title: 'sex', render: p => p.sex === 'male' ? 'M' : 'Ж'},
-  {title: 'age', render: p => p.age === undefined ? '-' : p.age.toString()}
+  {
+    title: 'name',
+    render: p => p.name,
+    comparator: (a, b) => a.name.localeCompare(b.name),
+  },
+  {
+    title: 'surname', 
+    render: p => p.surname ?? "—",
+    comparator(a, b) {
+      if (a.surname === null && b.surname === null) {
+        return 0;
+      }
+      if (a.surname === null) {
+        return 1;
+      }
+      if (b.surname === null) {
+        return -1;
+      }
+      return a.surname.localeCompare(b.surname)
+    },
+  },
+  {
+    title: 'sex',
+    render: p => p.sex === 'male' ? 'M' : 'Ж',
+  },
+  {
+    title: 'age',
+    render: p => p.age === undefined ? '-' : p.age.toString(),
+    comparator(a, b) {
+      if (a.age === undefined && b.age === undefined) {
+        return 0;
+      }
+      if (a.age === undefined) {
+        return 1;
+      }
+      if (b.age === undefined) {
+        return -1;
+      }
+      return a.age - b.age;
+  }
+  }
 ]
 
 export function PersonPage() {
-  const [sorter, setSorter] = useState('id')
-  function mySort(a: Person, b: Person):number{
-    switch(sorter){
-        case 'age': {
-            if(!a.age){ //age - не обязательный параметр
-                return 1
-            }
-            if(!b.age){
-                return -1
-            }
-            return a.age - b.age;
-        }
-        case 'id': return Number(a.id) - Number(b.id)
-        case 'name': return  Number(a.name.charCodeAt(0)) - Number(b.name.charCodeAt(0))
-        case 'surname': return  Number(a.surname?.charCodeAt(0)) - Number(b.surname?.charCodeAt(0)) //Добавить if
-        case 'sex': return  Number(a.sex.charCodeAt(0)) - Number(b.sex.charCodeAt(0))
-        default: return Number(a.id) -  Number(b.id)
-    }
-}
   return (
     <div className="person-page">
-      <Table data={people.sort(mySort)} columns={columns} propsSort={setSorter} sorter={sorter}/>
+      <Table data={people} columns={columns} />
     </div>
   );
 }

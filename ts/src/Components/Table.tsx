@@ -1,44 +1,34 @@
 import { useState } from "react";
 import {Identifiable} from "../domain/Identifiable";
 
-export interface Column<X> {
+type Comparator<T> = (a: T, b: T) => number;
+
+export interface Column<T> {
     title: string,
-    render: (p: X) => string,
-    comparator?: (a: X, b: X) => number,
+    render: (p: T) => string,
+    comparator?: Comparator<T>,
 }
 
-interface TableProps<K> {
-    data: K[]
-    columns: Column<K>[],
-    propsSort?: (str: string) => void,
-    sorter: string,
+interface TableProps<T> {
+    data: T[]
+    columns: Column<T>[],
 }
 
-export function Table<K extends Identifiable>(props: TableProps<K>){
-    /*const [sorting, setSotring] = useState('id')s
-    function mySort(a: any, b: any):number{
-        switch(sorting){
-            case 'age': {
-                if(!a.age){ //age - не обязательный параметр
-                    return 1
-                }
-                if(!b.age){
-                    return -1
-                }
-                return Number(a.age) - Number(b.age);
-            }
-            case 'id': return Number(a.id) - Number(b.id)
-            case 'color': return  Number(b.id) - Number(a.id)
-            case 'name': return  Number(b.id) - Number(a.id)
-            case 'surname': return  Number(a.id) - Number(b.id)
-            case 'sex': return  Number(b.id) - Number(a.id)
-            //Свойство coordintates отсутствует в типе K(person)
-            case 'coordinates': return (Math.abs(a.coordinates.x) + Math.abs(a.coordinates.y)) - (Math.abs(b.coordinates.x) + Math.abs(b.coordinates.y))
-            //Свойство age отстутствуют в типе K(point)
-            default: return Number(a.id) -  Number(b.id)
-        }
+export function Table<T extends Identifiable>(props: TableProps<T>){
+    const [comparator, setComparator] = useState<{fn: Comparator<T> | undefined, increase: boolean}>({fn: undefined, increase: true});
+    const sorted = comparator.fn 
+        ? comparator.increase 
+            ? [...props.data].sort(comparator.fn)
+            : [...props.data].sort(comparator.fn).reverse()
+        : props.data
+    function toggleComparator(elComparator: Comparator<T> | undefined){
+        setComparator(({fn, increase}) => {
+            return {
+                fn: elComparator,
+                increase: fn === elComparator ? !increase : true
+            };
+        })
     }
-    */
     return (
         <table>
             <thead>
@@ -46,8 +36,8 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                 {props.columns.map(el => (
                     <th 
                         key={el.title} 
-                        onClick={()=>/*setSotring(el.title)*/ props.propsSort ? props.propsSort(el.title) : {}} 
-                        style={{cursor: 'pointer', borderBottom: '1px dashed black', background: props.sorter === el.title ? 'red' : 'none'}}
+                        onClick={el.comparator === undefined ? undefined : () => toggleComparator(el.comparator)} 
+                        style={el.comparator && {cursor: 'pointer', borderBottom: '1px dashed black', background: el.comparator === comparator.fn ? 'red' : 'none'}}
                     >
                         {el.title}
                     </th>
@@ -55,7 +45,7 @@ export function Table<K extends Identifiable>(props: TableProps<K>){
                 </tr>
             </thead>
             <tbody>
-               {props.data.map(el => (
+               {sorted.map(el => (
                     <tr key={el.id}>
                         {props.columns.map(column => (
                             <td key={column.title}>{column.render(el)}</td>
